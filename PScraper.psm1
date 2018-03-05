@@ -21,13 +21,17 @@
 function Get-WiFi {
     param( [string[]] $ProfileName = '*' )
 
-    Write-Heading -Heading 'Wi-Fi Networks'
+    Write-Heading -Heading 'Wi-Fi Profiles'
 
     $output = (netsh wlan show profiles name="$ProfileName" key=clear) `
     | Select-String -Pattern 'Name','SSID name','Authentication','Key Content' -CaseSensitive `
     | Out-String
 
-    Write-Host -ForegroundColor White $output
+    if ($output) {
+        Write-Host -ForegroundColor White $output
+    } else {
+        Write-Host -ForegroundColor White ("`n  No profiles found`n`n")
+    }
 
 }
 
@@ -41,7 +45,6 @@ function Write-Heading {
 
     Write-Host -Separator "`n " -ForegroundColor Green ( (' ' +$line), $middle, $line)
 }
-
 
 
 export-modulemember -function Get-WiFi
